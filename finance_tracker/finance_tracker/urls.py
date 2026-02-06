@@ -17,13 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from django.http import HttpResponse
-
-def home(request):
-    return HttpResponse("Finance Tracker API is running!")
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', home),
+    path('', RedirectView.as_view(url='admin/')),
     path('admin/', admin.site.urls),
     path('api/', include('tracker.urls')),
     path('api/token/', TokenObtainPairView.as_view()),
