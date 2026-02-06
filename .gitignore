@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Python/Django (Backend)
+__pycache__/
+venv/
+env/
+db.sqlite3
+*.pyc
+
+# System
+.DS_Store
+Thumbs.db
