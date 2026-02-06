@@ -6,3 +6,4 @@ openai
 gunicorn
 whitenoise
 requests
+djangorestframework-simplejwt
