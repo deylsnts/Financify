@@ -138,3 +138,7 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Enable WhiteNoise's Gzip compression of static assets.
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
