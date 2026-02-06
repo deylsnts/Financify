@@ -1,0 +1,8 @@
+Django>=5.0.0
+djangorestframework
+django-cors-headers
+python-dotenv
+openai
+gunicorn
+whitenoise
+requests
