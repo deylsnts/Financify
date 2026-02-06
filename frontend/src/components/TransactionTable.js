@@ -29,6 +29,7 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
               <tr>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Title</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Amount</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Category</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Type</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Action</th>
               </tr>
@@ -38,6 +39,7 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
                 <tr key={tx.id}>
                   <td className="px-4 py-2">{tx.title}</td>
                   <td className="px-4 py-2">₱{tx.amount}</td>
+                  <td className="px-4 py-2">{tx.category}</td>
                   <td
                     className={`px-4 py-2 font-semibold ${
                       tx.type === "income" ? "text-green-600" : "text-red-600"
