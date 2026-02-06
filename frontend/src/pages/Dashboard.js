@@ -4,7 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import DashboardCards from "../components/DashboardCards";
 import TransactionForm from "../components/TransactionForm";
+import Analytics from "../components/Analytics";
+import AIInsights from "../components/AIInsights";
 import TransactionTable from "../components/TransactionTable";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
 
 export default function Dashboard() {
   const [summary, setSummary] = useState({ income: 0, expenses: 0, balance: 0 });
@@ -22,13 +26,13 @@ export default function Dashboard() {
     }
 
     try {
-      const summaryRes = await axios.get("http://127.0.0.1:8000/api/dashboard/", {
+      const summaryRes = await axios.get(`${API_URL}/api/dashboard/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSummary(summaryRes.data);
 
       const transactionsRes = await axios.get(
-        "http://127.0.0.1:8000/api/transactions/",
+        `${API_URL}/api/transactions/`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTransactions(transactionsRes.data);
@@ -59,7 +63,7 @@ export default function Dashboard() {
     if (!window.confirm("Are you sure you want to delete this transaction?")) return;
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/transactions/${id}/`, {
+      await axios.delete(`${API_URL}/api/transactions/${id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTransactions(transactions.filter((t) => t.id !== id));
@@ -72,16 +76,51 @@ export default function Dashboard() {
 
   return (
     <Layout>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-500 mt-1">Welcome back! Here is your financial overview.</p>
+      </div>
+
       <DashboardCards {...summary} />
 
-      <TransactionForm
-        onAdd={handleAddTransaction}
-        onUpdate={handleUpdateTransaction}
-        editingTransaction={editingTransaction}
-        setEditingTransaction={setEditingTransaction}
-      />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
+        {/* Left Column: Analytics & Insights */}
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+              Analytics & Trends
+            </h2>
+            <Analytics transactions={transactions} />
+          </div>
+          
+          <AIInsights transactions={transactions} />
+        </div>
 
-      <TransactionTable transactions={transactions} onDelete={handleDeleteTransaction} onEdit={setEditingTransaction} />
+        {/* Right Column: Transactions */}
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+              {editingTransaction ? "Edit Transaction" : "New Transaction"}
+            </h2>
+            <TransactionForm
+              onAdd={handleAddTransaction}
+              onUpdate={handleUpdateTransaction}
+              editingTransaction={editingTransaction}
+              setEditingTransaction={setEditingTransaction}
+            />
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+              Recent Transactions
+            </h2>
+            <TransactionTable transactions={transactions} onDelete={handleDeleteTransaction} onEdit={setEditingTransaction} />
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 }

@@ -12,6 +12,8 @@ const CATEGORY_OPTIONS = [
   { value: "savings_investments", label: "Savings & Investments" }
 ];
 
+const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+
 export default function TransactionForm({ onAdd, onUpdate, editingTransaction, setEditingTransaction }) {
   const [form, setForm] = useState({
     title: "",
@@ -63,7 +65,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
     try {
       if (editingTransaction) {
         const response = await axios.put(
-          `http://127.0.0.1:8000/api/transactions/${editingTransaction.id}/`,
+          `${API_URL}/api/transactions/${editingTransaction.id}/`,
           {
             ...form,
             amount: parseFloat(form.amount),
@@ -76,7 +78,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         onUpdate(response.data);
       } else {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/transactions/",
+          `${API_URL}/api/transactions/`,
           {
             ...form,
             amount: parseFloat(form.amount),
@@ -111,27 +113,35 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow rounded-xl p-4 mb-6">
-      <h2 className="text-lg font-semibold mb-4">{editingTransaction ? "Edit Transaction" : "Add Transaction"}</h2>
-
-      <div className="grid md:grid-cols-3 gap-4">
+    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-2xl p-6 h-fit">
+      <div className="flex flex-col gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
         <input
-          className="border p-2 rounded"
           placeholder="Title"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
         />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
         <input
           type="number"
-          className="border p-2 rounded"
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           placeholder="Amount"
           value={form.amount}
           onChange={(e) => setForm({ ...form, amount: e.target.value })}
           required
         />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
         <select
-          className="border p-2 rounded"
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
           value={form.category}
           onChange={(e) => setForm({ ...form, category: e.target.value })}
           required
@@ -141,32 +151,41 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
         <input
           type="date"
-          className="border p-2 rounded"
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
           required
         />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
         <select
-          className="border p-2 rounded"
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
           value={form.type}
           onChange={(e) => setForm({ ...form, type: e.target.value })}
         >
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
+        </div>
       </div>
 
-      <div className="flex gap-2 mt-4">
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      <div className="flex gap-3 mt-6">
+        <button className="flex-1 bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm">
           {editingTransaction ? "Update" : "Add"}
         </button>
         {editingTransaction && (
           <button
             type="button"
             onClick={() => setEditingTransaction(null)}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            className="flex-1 bg-gray-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-gray-600 transition shadow-sm"
           >
             Cancel
           </button>
