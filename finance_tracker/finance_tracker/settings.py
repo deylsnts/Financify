@@ -90,6 +90,10 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# Vercel Postgres (Neon) sets POSTGRES_URL. We map it to DATABASE_URL if missing.
+if 'DATABASE_URL' not in os.environ and 'POSTGRES_URL' in os.environ:
+    os.environ['DATABASE_URL'] = os.environ['POSTGRES_URL']
+
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
