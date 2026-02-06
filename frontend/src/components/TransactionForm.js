@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const CATEGORY_OPTIONS = [
+  { value: "income", label: "Income" },
+  { value: "housing_shelter", label: "Housing/Shelter" },
+  { value: "transportation", label: "Transportation" },
+  { value: "shopping_personal_care", label: "Shopping/Personal Care" },
+  { value: "health_medical", label: "Health & Medical" },
+  { value: "entertainment", label: "Entertainment" },
+  { value: "debt_finance", label: "Debt & Finance" },
+  { value: "savings_investments", label: "Savings & Investments" }
+];
+
 export default function TransactionForm({ onAdd, onUpdate, editingTransaction, setEditingTransaction }) {
   const [form, setForm] = useState({
     title: "",
@@ -119,13 +130,17 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
           onChange={(e) => setForm({ ...form, amount: e.target.value })}
           required
         />
-        <input
+        <select
           className="border p-2 rounded"
-          placeholder="Category"
           value={form.category}
           onChange={(e) => setForm({ ...form, category: e.target.value })}
           required
-        />
+        >
+          <option value="">Select Category</option>
+          {CATEGORY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
         <input
           type="date"
           className="border p-2 rounded"
