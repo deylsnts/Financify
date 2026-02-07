@@ -12,7 +12,7 @@ const CATEGORY_OPTIONS = [
   { value: "savings_investments", label: "Savings & Investments" }
 ];
 
-const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 export default function TransactionForm({ onAdd, onUpdate, editingTransaction, setEditingTransaction }) {
   const [form, setForm] = useState({
