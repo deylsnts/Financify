@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+// Use empty string for production (same domain) or localhost for development
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 function Login() {
   const [username, setUsername] = useState("");
