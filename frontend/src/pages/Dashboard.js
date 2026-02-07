@@ -177,17 +177,17 @@ export default function Dashboard() {
               setEditingTransaction={setEditingTransaction}
             />
           </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-5 flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-              </div>
-              Recent Transactions
-            </h2>
-            <TransactionTable transactions={filteredTransactions} onDelete={handleDeleteTransaction} onEdit={setEditingTransaction} />
-          </div>
         </div>
+      </div>
+
+      <div className="mt-8 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-5 flex items-center gap-3">
+          <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+            <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+          </div>
+          Recent Transactions
+        </h2>
+        <TransactionTable transactions={filteredTransactions} onDelete={handleDeleteTransaction} onEdit={setEditingTransaction} />
       </div>
     </Layout>
   );
