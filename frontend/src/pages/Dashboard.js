@@ -8,7 +8,7 @@ import Analytics from "../components/Analytics";
 import AIInsights from "../components/AIInsights";
 import TransactionTable from "../components/TransactionTable";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 export default function Dashboard() {
   const [summary, setSummary] = useState({ income: 0, expenses: 0, balance: 0 });
