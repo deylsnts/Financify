@@ -46,6 +46,16 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Form Validation: Ensure Type and Category match
+    if (form.type === "income" && form.category !== "income") {
+      alert("Income transactions must use the 'Income' category.");
+      return;
+    }
+    if (form.type === "expense" && form.category === "income") {
+      alert("Expense transactions cannot use the 'Income' category.");
+      return;
+    }
+
     const token = localStorage.getItem("access");
     if (!token) {
       alert("You must be logged in!");
@@ -143,7 +153,16 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         <select
           className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
           value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
+          onChange={(e) => {
+            const newCategory = e.target.value;
+            let newType = form.type;
+            if (newCategory === "income") {
+              newType = "income";
+            } else if (newCategory !== "") {
+              newType = "expense";
+            }
+            setForm({ ...form, category: newCategory, type: newType });
+          }}
           required
         >
           <option value="">Select Category</option>
@@ -169,7 +188,16 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         <select
           className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
           value={form.type}
-          onChange={(e) => setForm({ ...form, type: e.target.value })}
+          onChange={(e) => {
+            const newType = e.target.value;
+            let newCategory = form.category;
+            if (newType === "income") {
+              newCategory = "income";
+            } else if (newType === "expense" && newCategory === "income") {
+              newCategory = "";
+            }
+            setForm({ ...form, type: newType, category: newCategory });
+          }}
         >
           <option value="expense">Expense</option>
           <option value="income">Income</option>
