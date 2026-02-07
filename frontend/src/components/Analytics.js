@@ -103,41 +103,41 @@ export default function Analytics({ transactions }) {
     <div className="space-y-6 mb-6">
       {/* 1. Cash Flow Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-500 uppercase font-bold">Net Savings</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Net Savings</p>
           <p className={`text-2xl font-bold ${netSavings >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             ₱{netSavings.toLocaleString()}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-500 uppercase font-bold">Savings Rate</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Savings Rate</p>
           <p className="text-2xl font-bold text-blue-600">{savingsRate.toFixed(1)}%</p>
         </div>
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-500 uppercase font-bold">Needs (Fixed)</p>
-          <p className="text-2xl font-bold text-gray-700">₱{spendingByType.needs.toLocaleString()}</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Needs (Fixed)</p>
+          <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">₱{spendingByType.needs.toLocaleString()}</p>
         </div>
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-500 uppercase font-bold">Wants (Variable)</p>
-          <p className="text-2xl font-bold text-gray-700">₱{spendingByType.wants.toLocaleString()}</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Wants (Variable)</p>
+          <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">₱{spendingByType.wants.toLocaleString()}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 2. Expense Breakdown */}
-        <div className="bg-white shadow-lg rounded-2xl p-6">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Spending by Category</h2>
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 transition-colors duration-300">
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Spending by Category</h2>
           {categoryBreakdown.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No expenses yet.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-center py-4">No expenses yet.</p>
           ) : (
             <div className="space-y-4">
               {categoryBreakdown.map((item, index) => (
                 <div key={item.category}>
-                  <div className="flex justify-between text-sm font-medium text-gray-700 mb-1">
+                  <div className="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     <span>{CATEGORY_LABELS[item.category] || item.category}</span>
                     <span>₱{item.amount.toLocaleString()} ({item.percentage.toFixed(1)}%)</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                     <div
                       className={`h-2.5 rounded-full ${COLORS[index % COLORS.length]}`}
                       style={{ width: `${item.percentage}%` }}
@@ -150,11 +150,11 @@ export default function Analytics({ transactions }) {
         </div>
 
         {/* 3. Monthly Trends Chart */}
-        <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Income vs Expense Trend</h2>
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col transition-colors duration-300">
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Income vs Expense Trend</h2>
           <div className="flex-1 flex items-end justify-between space-x-2 min-h-[200px] pt-4">
             {monthlyData.length === 0 ? (
-              <p className="w-full text-center text-gray-500">No data available</p>
+              <p className="w-full text-center text-gray-500 dark:text-gray-400">No data available</p>
             ) : (
               monthlyData.map((m) => (
                 <div key={m.month} className="flex flex-col items-center flex-1 group">
@@ -162,12 +162,12 @@ export default function Analytics({ transactions }) {
                     <div style={{ height: `${(m.income / maxMonthlyVal) * 100}%` }} className="w-3 md:w-6 bg-green-400 rounded-t opacity-80 group-hover:opacity-100 transition-all" title={`Income: ₱${m.income}`}></div>
                     <div style={{ height: `${(m.expense / maxMonthlyVal) * 100}%` }} className="w-3 md:w-6 bg-red-400 rounded-t opacity-80 group-hover:opacity-100 transition-all" title={`Expense: ₱${m.expense}`}></div>
                   </div>
-                  <span className="text-[10px] md:text-xs text-gray-500 mt-2 font-medium">{m.month.split('-')[1]}</span>
+                  <span className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">{m.month.split('-')[1]}</span>
                 </div>
               ))
             )}
           </div>
-          <div className="flex justify-center gap-4 mt-4 text-xs text-gray-600">
+          <div className="flex justify-center gap-4 mt-4 text-xs text-gray-600 dark:text-gray-400">
             <div className="flex items-center"><div className="w-3 h-3 bg-green-400 rounded mr-1"></div> Income</div>
             <div className="flex items-center"><div className="w-3 h-3 bg-red-400 rounded mr-1"></div> Expense</div>
           </div>

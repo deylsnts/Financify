@@ -92,24 +92,24 @@ export default function AIInsights({ transactions }) {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-2xl p-6 mb-8 border border-gray-100">
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 mb-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-purple-100 rounded-lg">
+            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-800">AI Financial Insights</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">AI Financial Insights</h2>
         </div>
 
         {/* Local Stat (Instant) */}
         {stats && (
-            <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                <p className="text-gray-700">
+            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+                <p className="text-gray-700 dark:text-gray-200">
                     You spent <span className={`font-bold ${stats.isHigher ? 'text-red-600' : 'text-green-600'}`}>
                         {Math.abs(stats.percentChange)}% {stats.isHigher ? 'more' : 'less'}
-                    </span> on <span className="font-semibold capitalize">{stats.topCategory.replace('_', ' ')}</span> compared to last month.
+                    </span> on <span className="font-semibold capitalize text-gray-900 dark:text-white">{stats.topCategory.replace('_', ' ')}</span> compared to last month.
                 </p>
             </div>
         )}
@@ -139,9 +139,9 @@ export default function AIInsights({ transactions }) {
         )}
 
         {insight && (
-            <div className="mt-4 p-5 bg-purple-50 rounded-xl border border-purple-100 relative">
-                <h3 className="text-sm font-bold text-purple-800 uppercase mb-2 tracking-wide">AI Recommendation</h3>
-                <p className="text-gray-800 leading-relaxed whitespace-pre-line">{insight}</p>
+            <div className="mt-4 p-5 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800 relative">
+                <h3 className="text-sm font-bold text-purple-800 dark:text-purple-300 uppercase mb-2 tracking-wide">AI Recommendation</h3>
+                <p className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-line">{insight}</p>
                 <button onClick={() => setInsight("")} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
                     ✕
                 </button>

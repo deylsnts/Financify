@@ -28,30 +28,30 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
   }, [transactions.length, totalPages, currentPage]);
 
   return (
-    <div className="bg-white shadow-lg rounded-2xl p-6 h-full flex flex-col">
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 h-full flex flex-col transition-colors duration-300">
       {transactions.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center text-gray-500 py-10">No transactions yet.</div>
+        <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400 py-10">No transactions yet.</div>
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+              <tr className="bg-gray-50 dark:bg-gray-700">
+                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Type</th>
+                <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {currentTransactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tx.date}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{tx.title}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">₱{Number(tx.amount).toLocaleString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <tr key={tx.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{tx.date}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{tx.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">₱{Number(tx.amount).toLocaleString()}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {CATEGORY_LABELS[tx.category] || tx.category}
                   </td>
                   <td
@@ -66,13 +66,13 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => onEdit(tx)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-4"
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-4"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => onDelete(tx.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                     >
                       Delete
                     </button>
@@ -87,17 +87,17 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-50"
+                className="px-3 py-1 border dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300 disabled:opacity-50"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-50"
+                className="px-3 py-1 border dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300 disabled:opacity-50"
               >
                 Next
               </button>

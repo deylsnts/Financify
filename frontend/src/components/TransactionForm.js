@@ -131,24 +131,24 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-2xl p-6 h-fit">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 h-fit transition-colors duration-300">
       <div className="flex flex-col gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
         <input
           placeholder="Title"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
-          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
         />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
         <input
           type="number"
-          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           placeholder="Amount"
           value={form.amount}
           onChange={(e) => setForm({ ...form, amount: e.target.value })}
@@ -157,9 +157,9 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
         <select
-          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           value={form.category}
           onChange={(e) => {
             const newCategory = e.target.value;
@@ -181,10 +181,10 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
         <input
           type="date"
-          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
           required
@@ -193,9 +193,9 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
         <select
-          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           value={form.type}
           onChange={(e) => {
             const newType = e.target.value;
