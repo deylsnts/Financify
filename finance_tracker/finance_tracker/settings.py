@@ -140,7 +140,7 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'django_static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Enable WhiteNoise's Gzip compression of static assets.
