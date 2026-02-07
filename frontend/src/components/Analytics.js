@@ -16,25 +16,25 @@ const COLORS = [
   "bg-purple-500", "bg-pink-500", "bg-indigo-500", "bg-teal-500"
 ];
 
-export default function Analytics({ transactions }) {
+export default function Analytics({ transactions, filter = "all" }) {
   const { 
     categoryBreakdown, 
     totalIncome, 
     totalExpense, 
     netSavings, 
     savingsRate,
-    monthlyData,
+    trendData,
     spendingByType
   } = useMemo(() => {
     if (!transactions.length) return { 
       categoryBreakdown: [], totalIncome: 0, totalExpense: 0, 
-      netSavings: 0, savingsRate: 0, monthlyData: [], spendingByType: { needs: 0, wants: 0, savings: 0 } 
+      netSavings: 0, savingsRate: 0, trendData: [], spendingByType: { needs: 0, wants: 0, savings: 0 } 
     };
 
     let income = 0;
     let expense = 0;
     const catMap = {};
-    const monthMap = {};
+    const trendMap = {};
     
     // 50/30/20 Rule Grouping
     let needs = 0; // Housing, Transport, Health, Debt
@@ -44,16 +44,28 @@ export default function Analytics({ transactions }) {
     transactions.forEach((t) => {
       const amount = Number(t.amount);
       const date = new Date(t.date);
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      
+      let key;
+      let label;
 
-      if (!monthMap[monthKey]) monthMap[monthKey] = { income: 0, expense: 0 };
+      if (filter === "weekly" || filter === "monthly") {
+        // Group by Day for short periods
+        key = t.date; // YYYY-MM-DD
+        label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      } else {
+        // Group by Month for long periods
+        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        label = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      }
+
+      if (!trendMap[key]) trendMap[key] = { income: 0, expense: 0, label };
 
       if (t.type === "income") {
         income += amount;
-        monthMap[monthKey].income += amount;
+        trendMap[key].income += amount;
       } else {
         expense += amount;
-        monthMap[monthKey].expense += amount;
+        trendMap[key].expense += amount;
         catMap[t.category] = (catMap[t.category] || 0) + amount;
 
         // Classify for Budget Insights
@@ -79,11 +91,11 @@ export default function Analytics({ transactions }) {
       }))
       .sort((a, b) => b.amount - a.amount);
 
-    // Monthly Trends (Last 6 months usually, but showing all for now)
-    const months = Object.keys(monthMap).sort();
-    const monthly = months.map(m => ({
-      month: m,
-      ...monthMap[m]
+    // Trends (Daily or Monthly based on filter)
+    const trendKeys = Object.keys(trendMap).sort();
+    const trend = trendKeys.map(k => ({
+      key: k,
+      ...trendMap[k]
     }));
 
     return {
@@ -92,12 +104,12 @@ export default function Analytics({ transactions }) {
       totalExpense: expense,
       netSavings: net,
       savingsRate: rate,
-      monthlyData: monthly,
+      trendData: trend,
       spendingByType: { needs, wants, savings }
     };
-  }, [transactions]);
+  }, [transactions, filter]);
 
-  const maxMonthlyVal = Math.max(...monthlyData.map(m => Math.max(m.income, m.expense)), 100);
+  const maxTrendVal = Math.max(...trendData.map(d => Math.max(d.income, d.expense)), 100);
 
   return (
     <div className="space-y-6 mb-6">
@@ -153,16 +165,16 @@ export default function Analytics({ transactions }) {
         <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col">
           <h2 className="text-lg font-bold text-gray-800 mb-4">Income vs Expense Trend</h2>
           <div className="flex-1 flex items-end justify-between space-x-2 min-h-[200px] pt-4">
-            {monthlyData.length === 0 ? (
+            {trendData.length === 0 ? (
               <p className="w-full text-center text-gray-500">No data available</p>
             ) : (
-              monthlyData.map((m) => (
-                <div key={m.month} className="flex flex-col items-center flex-1 group">
+              trendData.map((d) => (
+                <div key={d.key} className="flex flex-col items-center flex-1 group">
                   <div className="flex items-end space-x-1 h-40 w-full justify-center">
-                    <div style={{ height: `${(m.income / maxMonthlyVal) * 100}%` }} className="w-3 md:w-6 bg-green-400 rounded-t opacity-80 group-hover:opacity-100 transition-all" title={`Income: ₱${m.income}`}></div>
-                    <div style={{ height: `${(m.expense / maxMonthlyVal) * 100}%` }} className="w-3 md:w-6 bg-red-400 rounded-t opacity-80 group-hover:opacity-100 transition-all" title={`Expense: ₱${m.expense}`}></div>
+                    <div style={{ height: `${(d.income / maxTrendVal) * 100}%` }} className="w-3 md:w-6 bg-green-400 rounded-t opacity-80 group-hover:opacity-100 transition-all" title={`Income: ₱${d.income.toLocaleString()}`}></div>
+                    <div style={{ height: `${(d.expense / maxTrendVal) * 100}%` }} className="w-3 md:w-6 bg-red-400 rounded-t opacity-80 group-hover:opacity-100 transition-all" title={`Expense: ₱${d.expense.toLocaleString()}`}></div>
                   </div>
-                  <span className="text-[10px] md:text-xs text-gray-500 mt-2 font-medium">{m.month.split('-')[1]}</span>
+                  <span className="text-[10px] md:text-xs text-gray-500 mt-2 font-medium whitespace-nowrap overflow-hidden text-ellipsis max-w-full">{d.label}</span>
                 </div>
               ))
             )}
