@@ -1,0 +1,11 @@
+Django>=4.2,<5.0
+djangorestframework
+django-cors-headers
+python-dotenv
+openai
+gunicorn
+whitenoise
+requests
+djangorestframework-simplejwt
+psycopg2-binary
+dj-database-url
