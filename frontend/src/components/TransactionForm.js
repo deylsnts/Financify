@@ -15,11 +15,14 @@ const CATEGORY_OPTIONS = [
 const API_URL = process.env.REACT_APP_API_URL || "";
 
 export default function TransactionForm({ onAdd, onUpdate, editingTransaction, setEditingTransaction }) {
+  const now = new Date();
+  const maxDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
   const [form, setForm] = useState({
     title: "",
     amount: "",
     type: "expense",
-    date: new Date().toISOString().split("T")[0],
+    date: maxDate,
     category: "",
   });
 
@@ -37,7 +40,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         title: "",
         amount: "",
         type: "expense",
-        date: new Date().toISOString().split("T")[0],
+        date: maxDate,
         category: "",
       });
     }
@@ -53,6 +56,11 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
     }
     if (form.type === "expense" && form.category === "income") {
       alert("Expense transactions cannot use the 'Income' category.");
+      return;
+    }
+
+    if (form.date > maxDate) {
+      alert("Date cannot be in the future.");
       return;
     }
 
@@ -102,7 +110,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
         setForm({
           title: "",
           amount: "",
-          date: new Date().toISOString().split("T")[0],
+          date: maxDate,
           type: "expense",
           category: "",
         });
@@ -180,6 +188,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
           required
+          max={maxDate}
         />
         </div>
 
