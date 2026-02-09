@@ -36,7 +36,7 @@ export default function Layout({ children }) {
                 </svg>
               </div>
               <h1 className="text-xl font-bold text-gray-800 dark:text-white tracking-tight">
-                Finance<span className="text-indigo-600">Tracker</span>
+                Financ<span className="text-indigo-600">ify</span>
               </h1>
             </div>
 
