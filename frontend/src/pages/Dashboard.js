@@ -127,7 +127,7 @@ export default function Dashboard() {
           <div className={`h-px w-full mb-8 ${theme === "dark" ? "bg-slate-700" : "bg-gray-300"}`}></div>
 
           {/* Dashboard Cards */}
-          <motion.div className="mb-10 grid md:grid-cols-3 gap-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div className="mb-10 gap-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <DashboardCards {...filteredSummary} theme={theme} />
           </motion.div>
 
