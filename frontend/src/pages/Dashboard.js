@@ -117,7 +117,7 @@ export default function Dashboard() {
 
       {/* Dashboard Cards */}
       <motion.div className="mb-10 grid md:grid-cols-3 gap-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <DashboardCards {...filteredSummary} theme="dark" />
+        <DashboardCards {...filteredSummary}  />
       </motion.div>
 
       {/* Analytics & Transaction Form */}
