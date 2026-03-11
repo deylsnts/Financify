@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -92,78 +92,127 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
     const API_URL = process.env.REACT_APP_API_URL || "";
+
+    useEffect(() => {
+        // Reset form and states when modal is closed to ensure a clean state
+        if (!isOpen) {
+            setTimeout(() => {
+                setUsername("");
+                setEmail("");
+                setPassword("");
+                setPassword2("");
+                setError("");
+                setIsSuccess(false);
+                setLoading(false);
+            }, 300); // Delay to allow for exit animation
+        }
+    }, [isOpen]);
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setError(""); // Clear previous errors
+        setError("");
+        setLoading(true);
 
         if (password !== password2) {
             setError("Passwords do not match.");
+            setLoading(false);
             return;
         }
 
         try {
-            const response = await axios.post(`${API_URL}/api/register/`, { username, email, password });
-            alert(response.data.message);
-            onSwitchToLogin(); // Switch to login modal on success
+            await axios.post(`${API_URL}/api/register/`, { username, email, password });
+            setIsSuccess(true); // Show success message
+            setTimeout(() => {
+                onSwitchToLogin(); // Switch to login modal after a delay
+            }, 2500);
         } catch (err) {
             if (err.response?.data?.error) {
                 setError(err.response.data.error);
             } else {
                 setError("Registration failed. An unknown error occurred.");
             }
+            setLoading(false);
         }
     };
 
     return (
-        <AuthModal isOpen={isOpen} onClose={onClose} title="Create Account">
-            <form onSubmit={handleRegister} className="space-y-4">
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
-                    required
-                />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password (min. 8 characters)"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={password2}
-                    onChange={(e) => setPassword2(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
-                    required
-                />
-                <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition">
-                    Sign Up
-                </button>
-            </form>
+        <AuthModal isOpen={isOpen} onClose={onClose} title={isSuccess ? "Success!" : "Create Account"}>
+            {isSuccess ? (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center py-4"
+                >
+                    <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-green-500/30">
+                        <motion.svg
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2, type: "tween" }}
+                            className="w-8 h-8 text-green-500" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </motion.svg>
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Registration Complete!</h3>
+                    <p className="text-slate-400 mt-2">Redirecting you to login...</p>
+                </motion.div>
+            ) : (
+                <>
+                    <form onSubmit={handleRegister} className="space-y-4">
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                            required
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password (min. 8 characters)"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={password2}
+                            onChange={(e) => setPassword2(e.target.value)}
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                            required
+                        />
+                        <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition disabled:opacity-50" disabled={loading}>
+                            {loading ? "Signing Up..." : "Sign Up"}
+                        </button>
+                    </form>
 
-            {error && <p className="text-red-400 text-center mt-2">{error}</p>}
+                    {error && <p className="text-red-400 text-center mt-2">{error}</p>}
 
-            <p className="text-center mt-4 text-slate-400 text-sm">
-                Already have an account?{" "}
-                <span onClick={onSwitchToLogin} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
-                    Sign in
-                </span>
-            </p>
+                    <p className="text-center mt-4 text-slate-400 text-sm">
+                        Already have an account?{" "}
+                        <span onClick={onSwitchToLogin} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
+                            Sign in
+                        </span>
+                    </p>
+                </>
+            )}
         </AuthModal>
     );
 }
@@ -234,7 +283,7 @@ export default function LandingPage() {
                     {/* Logo + Brand */}
                     <div className="flex items-center gap-3">
                         <img 
-                            src="/financify-icon.jpg" 
+                            src="/financify-icon.png" 
                             alt="Financify Logo" 
                             className="w-10 h-10 rounded-lg object-cover" 
                         />

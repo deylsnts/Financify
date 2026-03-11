@@ -10,6 +10,7 @@ import TransactionForm from "../components/TransactionForm";
 import Analytics from "../components/Analytics";
 import AIInsights from "../components/AIInsights";
 import TransactionTable from "../components/TransactionTable";
+import DashboardSkeleton from "../components/DashboardSkeleton";
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 
@@ -18,6 +19,7 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("access");
 
@@ -37,6 +39,8 @@ export default function Dashboard() {
     } catch (err) {
       console.error(err);
       alert("Failed to fetch dashboard data. Please login again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,6 +92,14 @@ export default function Dashboard() {
     const expenses = filteredTransactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + Number(t.amount), 0);
     return { income, expenses, balance: income - expenses };
   }, [filteredTransactions]);
+
+  if (loading) {
+    return (
+      <Layout>
+        {({ theme }) => <DashboardSkeleton theme={theme} />}
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
