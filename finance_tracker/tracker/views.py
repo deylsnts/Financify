@@ -52,6 +52,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+import re
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -59,15 +60,32 @@ def register(request):
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email')
+    
+    # 1. Check for required fields
+    if not all([username, email, password]):
+        return Response({'error': 'Username, email, and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if not username or not password:
-        return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
-
+    # 2. Username validation
+    if len(username) < 4:
+        return Response({'error': 'Username must be at least 4 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
     if User.objects.filter(username=username).exists():
-        return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'A user with that username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, email=email, password=password)
-    return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+    # 3. Email validation
+    if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+        return Response({'error': 'Please enter a valid email address.'}, status=status.HTTP_400_BAD_REQUEST)
+    if User.objects.filter(email__iexact=email).exists():
+        return Response({'error': 'A user with that email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    # 4. Password strength validation
+    if len(password) < 8:
+        return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.create_user(username=username, email=email, password=password)
+        return Response({'message': 'User created successfully! You can now log in.'}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({'error': f'An unexpected error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -114,4 +132,3 @@ class AIInsightsView(APIView):
         except Exception as e:
             print(e)
             return Response({"error": str(e)}, status=500)
-

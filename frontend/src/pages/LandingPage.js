@@ -29,7 +29,7 @@ function AuthModal({ isOpen, onClose, title, children }) {
 }
 
 // --- Login Modal ---
-function LoginModal({ isOpen, onClose }) {
+function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -74,27 +74,45 @@ function LoginModal({ isOpen, onClose }) {
             </form>
 
             {error && <p className="text-red-400 text-center mt-2">{error}</p>}
+
+            <p className="text-center mt-4 text-slate-400 text-sm">
+                Don't have an account?{" "}
+                <span onClick={onSwitchToRegister} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
+                    Sign up
+                </span>
+            </p>
         </AuthModal>
     );
 }
 
 // --- Register Modal ---
-function RegisterModal({ isOpen, onClose }) {
+function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [password2, setPassword2] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setError(""); // Clear previous errors
+
+        if (password !== password2) {
+            setError("Passwords do not match.");
+            return;
+        }
+
         try {
-            await axios.post(`${API_URL}/api/register/`, { username, email, password });
-            alert("Registration successful! Please login.");
-            onClose();
+            const response = await axios.post(`${API_URL}/api/register/`, { username, email, password });
+            alert(response.data.message);
+            onSwitchToLogin(); // Switch to login modal on success
         } catch (err) {
-            setError("Registration failed. Please check your info.");
+            if (err.response?.data?.error) {
+                setError(err.response.data.error);
+            } else {
+                setError("Registration failed. An unknown error occurred.");
+            }
         }
     };
 
@@ -119,9 +137,17 @@ function RegisterModal({ isOpen, onClose }) {
                 />
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder="Password (min. 8 characters)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    value={password2}
+                    onChange={(e) => setPassword2(e.target.value)}
                     className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                     required
                 />
@@ -131,9 +157,45 @@ function RegisterModal({ isOpen, onClose }) {
             </form>
 
             {error && <p className="text-red-400 text-center mt-2">{error}</p>}
+
+            <p className="text-center mt-4 text-slate-400 text-sm">
+                Already have an account?{" "}
+                <span onClick={onSwitchToLogin} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
+                    Sign in
+                </span>
+            </p>
         </AuthModal>
     );
 }
+
+// --- Icon Components for Features ---
+const TrackingIcon = () => (
+    <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+);
+const DashboardIcon = () => (
+    <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+);
+const AnalyticsIcon = () => (
+    <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" /></svg>
+);
+
+const features = [
+    {
+        icon: <TrackingIcon />,
+        title: "Smart Transaction Logging",
+        desc: "Quickly add expenses and income with smart categorization that learns your habits.",
+    },
+    {
+        icon: <DashboardIcon />,
+        title: "Unified Financial Dashboard",
+        desc: "See your complete financial picture with real-time balances and cash flow summaries.",
+    },
+    {
+        icon: <AnalyticsIcon />,
+        title: "Insightful Visual Analytics",
+        desc: "Interactive charts reveal spending patterns, helping you make smarter decisions.",
+    },
+];
 
 // --- Landing Page ---
 export default function LandingPage() {
@@ -141,30 +203,41 @@ export default function LandingPage() {
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [isRegisterOpen, setRegisterOpen] = useState(false);
 
+    const openLogin = () => {
+        setRegisterOpen(false);
+        setLoginOpen(true);
+    };
+
+    const openRegister = () => {
+        setLoginOpen(false);
+        setRegisterOpen(true);
+    };
+
+    const closeModals = () => {
+        setLoginOpen(false);
+        setRegisterOpen(false);
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 text-white">
+        <div className="min-h-screen bg-slate-950 text-white relative">
+            {/* Background Glows */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 -left-1/4 w-full h-full bg-gradient-to-r from-indigo-600/30 to-transparent filter blur-3xl opacity-20 transform -rotate-45"></div>
+                <div className="absolute bottom-0 -right-1/4 w-full h-full bg-gradient-to-l from-blue-600/30 to-transparent filter blur-3xl opacity-20 transform rotate-45"></div>
+            </div>
 
             {/* Navbar */}
-            <nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur border-b border-slate-800">
+            <header className="sticky top-0 z-50">
+            <nav className="bg-slate-950/60 backdrop-blur-lg border-b border-slate-800">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
                     {/* Logo + Brand */}
                     <div className="flex items-center gap-3">
-                        <div className="bg-indigo-600 p-2 rounded-lg flex items-center justify-center">
-                            <svg
-                                className="w-6 h-6 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                        </div>
+                        <img 
+                            src="/financify-icon.jpg" 
+                            alt="Financify Logo" 
+                            className="w-10 h-10 rounded-lg object-cover" 
+                        />
                         <h1 className="text-xl font-bold text-white">
                             Financ<span className="text-indigo-600">ify</span>
                         </h1>
@@ -173,13 +246,13 @@ export default function LandingPage() {
                     {/* Buttons */}
                     <div className="flex gap-4">
                         <button
-                            onClick={() => setLoginOpen(true)}
+                            onClick={openLogin}
                             className="text-slate-300 hover:text-white font-medium transition"
                         >
                             Login
                         </button>
                         <button
-                            onClick={() => setRegisterOpen(true)}
+                            onClick={openRegister}
                             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white font-semibold transition"
                         >
                             Sign Up
@@ -187,106 +260,125 @@ export default function LandingPage() {
                     </div>
                 </div>
             </nav>
-
+            </header>
 
             {/* Hero */}
-            <section className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
-                <div>
+            <main>
+            <section className="max-w-6xl mx-auto px-6 pt-20 pb-8 grid md:grid-cols-2 gap-16 items-center">
+                <div className="md:mt-[-4rem]">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-5xl md:text-6xl font-bold mb-6"
+                        transition={{ duration: 0.5 }}
+                        className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tighter"
                     >
-                        Take Full Control of Your Finances
+                        Master Your Money,
+                        <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-blue-400">
+                            Simplify Your Life.
+                        </span>
                     </motion.h1>
 
-                    <p className="text-lg text-slate-300 mb-8">
-                        Track every peso effortlessly and stay in control of your money
-                        with a fast, modern finance tracker built for everyday use.
-                    </p>
+                    <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className="text-lg text-slate-400 mb-10 max-w-lg"
+                    >
+                        Financify is the modern, intuitive finance tracker that helps you
+                        understand your spending and grow your savings effortlessly.
+                    </motion.p>
 
-                    <div className="flex gap-4 flex-wrap">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="flex gap-4 flex-wrap"
+                    >
                         <button
-                            onClick={() => setRegisterOpen(true)}
-                            className="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-2xl text-lg font-semibold"
+                            onClick={openRegister}
+                            className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-xl text-white font-semibold transition-transform hover:scale-105 shadow-lg shadow-indigo-600/20"
                         >
                             Get Started Free
                         </button>
-                    </div>
+                    </motion.div>
                 </div>
 
-                <motion.img
-                    initial={{ opacity: 0, scale: 0.95 }}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6 }}
-                    src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80"
-                    alt="Dashboard preview"
-                    className="rounded-2xl shadow-2xl w-full h-[420px] object-cover"
-                />
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="relative w-full h-[420px] bg-slate-800/50 rounded-2xl shadow-2xl border border-slate-700 p-4"
+                >
+                    <div className="w-full h-full rounded-lg bg-slate-900 p-3 flex flex-col gap-3">
+                        {/* Header */}
+                        <div className="flex justify-between items-center flex-shrink-0">
+                            <p className="font-bold text-lg">Dashboard</p>
+                            <div className="flex gap-1.5">
+                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                        </div>
+
+                        {/* Mini Cards */}
+                        <div className="grid grid-cols-3 gap-2">
+                            <div className="bg-green-500/20 p-2 rounded-lg"><p className="text-xs text-green-300">Income</p><p className="text-sm font-bold text-white">₱12,500</p></div>
+                            <div className="bg-red-500/20 p-2 rounded-lg"><p className="text-xs text-red-300">Expenses</p><p className="text-sm font-bold text-white">₱4,800</p></div>
+                            <div className="bg-blue-500/20 p-2 rounded-lg"><p className="text-xs text-blue-300">Balance</p><p className="text-sm font-bold text-white">₱7,700</p></div>
+                        </div>
+
+                        {/* Mini Chart & Transactions */}
+                        <div className="flex-1 grid grid-cols-2 gap-3 overflow-hidden">
+                            <div className="bg-slate-800/50 p-3 rounded-lg flex flex-col">
+                                <p className="text-xs font-bold text-slate-300 mb-2 flex-shrink-0">Spending</p>
+                                <div className="flex items-end h-full w-full gap-2">
+                                    <div className="w-full bg-indigo-500 rounded-t-sm" style={{ height: '40%' }}></div>
+                                    <div className="w-full bg-indigo-500 rounded-t-sm" style={{ height: '75%' }}></div>
+                                    <div className="w-full bg-indigo-500 rounded-t-sm" style={{ height: '20%' }}></div>
+                                    <div className="w-full bg-indigo-500 rounded-t-sm" style={{ height: '55%' }}></div>
+                                </div>
+                            </div>
+                            <div className="bg-slate-800/50 p-3 rounded-lg flex flex-col gap-2">
+                                <p className="text-xs font-bold text-slate-300 mb-1 flex-shrink-0">Recent</p>
+                                <div className="flex justify-between items-center"><p className="text-xs text-white truncate">Coffee Shop</p><p className="text-xs font-mono text-red-400">-₱250</p></div>
+                                <div className="flex justify-between items-center"><p className="text-xs text-white truncate">Salary</p><p className="text-xs font-mono text-green-400">+₱12,500</p></div>
+                                <div className="flex justify-between items-center"><p className="text-xs text-white truncate">Groceries</p><p className="text-xs font-mono text-red-400">-₱1,200</p></div>
+                                <div className="flex justify-between items-center"><p className="text-xs text-white truncate">Netflix</p><p className="text-xs font-mono text-red-400">-₱550</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </section>
 
             {/* Features */}
-            <section className="max-w-6xl mx-auto px-6 py-20 space-y-20">
-                {[
-                    {
-                        title: "Smart Expense & Income Tracking",
-                        tagline: "Track every peso effortlessly and stay in control of your money.",
-                        desc: "Add transactions instantly, categorize income and expenses, and see real-time balance updates in a clean interface.",
-                        img: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80",
-                    },
-                    {
-                        title: "Live Financial Dashboard",
-                        tagline: "Your finances, summarized in one powerful dashboard.",
-                        desc: "Instantly view total income, expenses, and balances with visual summaries that reveal spending patterns.",
-                        img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-                    },
-                    {
-                        title: "Visual Analytics & Charts",
-                        tagline: "Turn numbers into insights with visual analytics.",
-                        desc: "Interactive charts and summaries help you understand trends and make smarter financial decisions.",
-                        img: "https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&w=800&q=80",
-                    },
-                ].map((feature, i) => (
+            <section className="max-w-6xl mx-auto px-6 py-10">
+                <div className="text-center max-w-2xl mx-auto">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-3">Everything You Need to Succeed</h2>
+                    <p className="text-slate-400">
+                        Financify is packed with powerful features designed to give you clarity and control.
+                    </p>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-5 mt-8">
+                {features.map((feature, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        className={`grid md:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? "md:flex-row-reverse" : ""
-                            }`}
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="bg-slate-900 p-5 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-colors"
                     >
-                        <img
-                            src={feature.img}
-                            alt={feature.title}
-                            className="rounded-2xl shadow-xl w-full h-[320px] object-cover"
-                        />
-
-                        <div>
-                            <h2 className="text-3xl font-bold mb-4">{feature.title}</h2>
-                            <p className="text-blue-400 font-semibold mb-2">{feature.tagline}</p>
-                            <p className="text-slate-300">{feature.desc}</p>
-                        </div>
+                        {feature.icon}
+                        <h3 className="text-lg font-bold mb-1">{feature.title}</h3>
+                        <p className="text-slate-400">{feature.desc}</p>
                     </motion.div>
                 ))}
-            </section>
-
-            {/* Testimonials */}
-            <section className="bg-slate-900/60 py-20 px-6">
-                <h2 className="text-3xl font-bold text-center mb-12">
-                    Trusted by Everyday Users
-                </h2>
-
-                <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-                    {[
-                        "This app helped me finally understand my spending habits.",
-                        "Clean, fast, and incredibly easy to use.",
-                        "The dashboard makes managing money simple.",
-                    ].map((quote, i) => (
-                        <div key={i} className="bg-slate-800 p-6 rounded-2xl shadow-lg">
-                            <p className="text-slate-300">“{quote}”</p>
-                        </div>
-                    ))}
                 </div>
             </section>
+
+        
 
             {/* Footer */}
             <footer className="border-t border-slate-800 py-8 text-center text-slate-500">
@@ -294,8 +386,9 @@ export default function LandingPage() {
             </footer>
 
             {/* Modals */}
-            <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
-            <RegisterModal isOpen={isRegisterOpen} onClose={() => setRegisterOpen(false)} />
+            <LoginModal isOpen={isLoginOpen} onClose={closeModals} onSwitchToRegister={openRegister} />
+            <RegisterModal isOpen={isRegisterOpen} onClose={closeModals} onSwitchToLogin={openLogin} />
+            </main>
         </div>
     );
 }
