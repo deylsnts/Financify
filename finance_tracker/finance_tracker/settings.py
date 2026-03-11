@@ -98,7 +98,8 @@ if 'DATABASE_URL' not in os.environ and 'POSTGRES_URL' in os.environ:
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
+        conn_max_age=0 if 'VERCEL' in os.environ else 600,
+        ssl_require='DATABASE_URL' in os.environ
     )
 }
 
