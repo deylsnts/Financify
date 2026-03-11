@@ -115,6 +115,7 @@ def register(request):
 
         return Response({'message': 'Registration successful! Please check your email to activate your account.'}, status=status.HTTP_201_CREATED)
     except Exception as e:
+        print(f"Error during email sending: {e}")
         return Response({'error': f'An unexpected error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])

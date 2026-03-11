@@ -145,12 +145,12 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 if 'BREVO_SMTP_SERVER' in os.environ:
     # Production email settings (Brevo)
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('BREVO_SMTP_SERVER')
+    EMAIL_HOST = os.environ.get('BREVO_SMTP_SERVER', 'smtp-relay.brevo.com')
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = os.environ.get('BREVO_SMTP_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('BREVO_SMTP_PASSWORD')
-    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@domain.com')
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 else:
     # Development email settings (prints to console)
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
