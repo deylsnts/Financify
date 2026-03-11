@@ -33,7 +33,8 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
         <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400 py-10">No transactions yet.</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-700">
@@ -82,6 +83,46 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
             </tbody>
           </table>
         </div>
+
+          {/* Mobile Card View (PWA Friendly) */}
+          <div className="md:hidden space-y-4">
+            {currentTransactions.map((tx) => (
+              <div key={tx.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl border border-gray-100 dark:border-gray-600 shadow-sm">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-base">{tx.title}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{tx.date}</p>
+                  </div>
+                  <span className={`text-sm font-bold ${
+                    tx.type === "income" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                  }`}>
+                    {tx.type === "income" ? "+" : "-"}₱{Number(tx.amount).toLocaleString()}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center mt-3">
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">
+                    {CATEGORY_LABELS[tx.category] || tx.category}
+                  </span>
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => onEdit(tx)}
+                      className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800"
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => onDelete(tx.id)}
+                      className="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           {totalPages > 1 && (
             <div className="flex justify-between items-center mt-4">
               <button
