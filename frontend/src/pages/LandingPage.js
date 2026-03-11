@@ -33,54 +33,102 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL || "";
 
+    useEffect(() => {
+        // Reset form and states when modal is closed
+        if (!isOpen) {
+            setTimeout(() => {
+                setUsername("");
+                setPassword("");
+                setError("");
+                setIsSuccess(false);
+                setLoading(false);
+            }, 300); // Delay for exit animation
+        }
+    }, [isOpen]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError("");
+        setLoading(true);
         try {
             const response = await axios.post(`${API_URL}/api/token/`, { username, password });
             localStorage.setItem("access", response.data.access);
             localStorage.setItem("refresh", response.data.refresh);
-            navigate("/dashboard");
-            onClose();
+            setIsSuccess(true); // Trigger success animation
+            setTimeout(() => {
+                navigate("/dashboard");
+                onClose();
+            }, 2000); // Navigate after 2 seconds
         } catch (err) {
             setError("Invalid username or password");
+            setLoading(false);
         }
     };
 
     return (
-        <AuthModal isOpen={isOpen} onClose={onClose} title="Welcome Back">
-            <form onSubmit={handleLogin} className="space-y-4">
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
-                    required
-                />
-                <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition">
-                    Sign In
-                </button>
-            </form>
+        <AuthModal isOpen={isOpen} onClose={onClose} title={isSuccess ? "Success!" : "Welcome Back"}>
+            {isSuccess ? (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center py-4"
+                >
+                    <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-green-500/30">
+                        <motion.svg
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2, type: "tween" }}
+                            className="w-8 h-8 text-green-500" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </motion.svg>
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Login Successful!</h3>
+                    <p className="text-slate-400 mt-2">Redirecting to your dashboard...</p>
+                </motion.div>
+            ) : (
+                <>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
+                            required
+                        />
+                        <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition disabled:opacity-50" disabled={loading}>
+                            {loading ? "Signing In..." : "Sign In"}
+                        </button>
+                    </form>
 
-            {error && <p className="text-red-400 text-center mt-2">{error}</p>}
+                    {error && <p className="text-red-400 text-center mt-2">{error}</p>}
 
-            <p className="text-center mt-4 text-slate-400 text-sm">
-                Don't have an account?{" "}
-                <span onClick={onSwitchToRegister} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
-                    Sign up
-                </span>
-            </p>
+                    <p className="text-center mt-4 text-slate-400 text-sm">
+                        Don't have an account?{" "}
+                        <span onClick={onSwitchToRegister} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
+                            Sign up
+                        </span>
+                    </p>
+                </>
+            )}
         </AuthModal>
     );
 }
@@ -126,8 +174,8 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
             await axios.post(`${API_URL}/api/register/`, { username, email, password });
             setIsSuccess(true); // Show success message
             setTimeout(() => {
-                onSwitchToLogin(); // Switch to login modal after a delay
-            }, 2500);
+                onClose(); // Close the modal after a delay
+            }, 4000);
         } catch (err) {
             if (err.response?.data?.error) {
                 setError(err.response.data.error);
@@ -160,8 +208,8 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </motion.svg>
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Registration Complete!</h3>
-                    <p className="text-slate-400 mt-2">Redirecting you to login...</p>
+                    <h3 className="text-lg font-semibold text-white">Registration Successful!</h3>
+                    <p className="text-slate-400 mt-2">Please check your email to find your activation link.</p>
                 </motion.div>
             ) : (
                 <>
@@ -252,6 +300,21 @@ export default function LandingPage() {
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [isRegisterOpen, setRegisterOpen] = useState(false);
 
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('activated') === 'true') {
+            alert('Account activated successfully! You can now log in.');
+            setRegisterOpen(false);
+            setLoginOpen(true);
+            // Clean the URL so the message doesn't pop up on every refresh
+            navigate('/', { replace: true });
+        } else if (params.get('activated') === 'false') {
+            alert('Activation link is invalid or has expired. Please try registering again.');
+            // Clean the URL
+            navigate('/', { replace: true });
+        }
+    }, [navigate]);
+
     const openLogin = () => {
         setRegisterOpen(false);
         setLoginOpen(true);
@@ -281,7 +344,7 @@ export default function LandingPage() {
                 <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
                     {/* Logo + Brand */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
                         <img 
                             src="/financify-icon.png" 
                             alt="Financify Logo" 
@@ -302,7 +365,7 @@ export default function LandingPage() {
                         </button>
                         <button
                             onClick={openRegister}
-                            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white font-semibold transition"
+                            className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl text-white font-semibold transition"
                         >
                             Sign Up
                         </button>
@@ -321,7 +384,7 @@ export default function LandingPage() {
                         transition={{ duration: 0.5 }}
                         className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tighter"
                     >
-                        Master Your Money,
+                        Track Your Money,
                         <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-blue-400">
                             Simplify Your Life.

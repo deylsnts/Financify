@@ -54,6 +54,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 import re
 
+# For email verification
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.shortcuts import redirect
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
@@ -82,10 +90,53 @@ def register(request):
         return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user = User.objects.create_user(username=username, email=email, password=password)
-        return Response({'message': 'User created successfully! You can now log in.'}, status=status.HTTP_201_CREATED)
+        # Create user but set as inactive
+        user = User.objects.create_user(username=username, email=email, password=password, is_active=False)
+
+        # Email verification logic
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Build activation link
+        # This uses the host of the request, which is correct for Vercel.
+        domain = request.get_host()
+        scheme = request.scheme
+        activation_link = f'{scheme}://{domain}/api/activate/{uid}/{token}/'
+
+        # Email content
+        mail_subject = 'Activate your Financify account.'
+        message = render_to_string('account_activation_email.html', {
+            'user': user,
+            'activation_link': activation_link,
+        })
+        
+        email_message = EmailMessage(mail_subject, message, to=[email])
+        email_message.send()
+
+        return Response({'message': 'Registration successful! Please check your email to activate your account.'}, status=status.HTTP_201_CREATED)
     except Exception as e:
         return Response({'error': f'An unexpected error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    # For production, use an environment variable for the frontend URL
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        # Redirect to frontend login page with a success message
+        return redirect(f'{frontend_url}/?activated=true')
+    else:
+        # Redirect to an invalid link page on the frontend
+        return redirect(f'{frontend_url}/?activated=false')
 
 from rest_framework.views import APIView
 from rest_framework.response import Response

@@ -66,7 +66,10 @@ ROOT_URLCONF = 'finance_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'tracker', # Look for templates in the tracker app directory
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +140,10 @@ USE_TZ = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+# For development, emails will be printed to the console.
+# For production, configure a real email service (e.g., SendGrid, Mailgun).
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Static files (CSS, JavaScript, Images)
