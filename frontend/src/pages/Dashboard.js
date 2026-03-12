@@ -106,9 +106,9 @@ export default function Dashboard() {
       {({ theme }) => (
         <>
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">
-            <div>
-              <h1 className={`text-4xl font-extrabold tracking-tight ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+          <div className="flex flex-col md:flex-row justify-between md:items-end items-center gap-6 mb-6">
+            <div className="text-center md:text-left">
+              <h1 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                 Dashboard
               </h1>
               <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-700"} mt-2 text-lg`}>
@@ -117,14 +117,14 @@ export default function Dashboard() {
             </div>
 
             {/* Filter Buttons */}
-            <div className={`p-1.5 rounded-xl shadow-md inline-flex ${theme === "dark" ? "bg-slate-800" : "bg-gray-200"}`}>
+            <div className={`p-1.5 rounded-xl shadow-md w-full md:w-auto flex ${theme === "dark" ? "bg-slate-800" : "bg-gray-200"}`}>
               {["all", "weekly", "monthly", "yearly"].map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  className={`flex-1 text-center px-3 sm:px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     filter === f
-                      ? "bg-indigo-600 text-white"
+                      ? "bg-indigo-600 text-white shadow-md"
                       : theme === "dark"
                       ? "text-gray-400 hover:bg-slate-700 hover:text-white"
                       : "text-gray-700 hover:bg-gray-300 hover:text-black"
