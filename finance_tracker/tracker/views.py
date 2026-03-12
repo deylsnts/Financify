@@ -61,6 +61,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
+import os
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -98,10 +99,8 @@ def register(request):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         
         # Build activation link
-        # This uses the host of the request, which is correct for Vercel.
-        domain = request.get_host()
-        scheme = request.scheme
-        activation_link = f'{scheme}://{domain}/api/activate/{uid}/{token}/'
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        activation_link = f'{frontend_url}/api/activate/{uid}/{token}/'
 
         # Email content
         mail_subject = 'Activate your Financify account.'
