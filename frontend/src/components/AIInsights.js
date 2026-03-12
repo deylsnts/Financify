@@ -1,7 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+import axiosInstance from '../utils/axiosInstance';
 
 export default function AIInsights({ transactions }) {
   const [insight, setInsight] = useState("");
@@ -65,8 +63,6 @@ export default function AIInsights({ transactions }) {
     setInsight("");
 
     try {
-      const token = localStorage.getItem("access");
-      
       // Prepare a summary to send to the AI (saves tokens)
       const summaryData = {
         total_income: transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount), 0),
@@ -76,10 +72,9 @@ export default function AIInsights({ transactions }) {
       };
 
       // NOTE: You need to implement this endpoint in your Django backend
-      const response = await axios.post(
-        `${API_URL}/api/ai-insights/`, 
-        summaryData,
-        { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axiosInstance.post(
+        `/api/ai-insights/`, 
+        summaryData
       );
 
       setInsight(response.data.insight);

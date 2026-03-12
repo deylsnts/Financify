@@ -1,6 +1,6 @@
 // src/pages/Dashboard.js
-import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -12,8 +12,6 @@ import AIInsights from "../components/AIInsights";
 import TransactionTable from "../components/TransactionTable";
 import DashboardSkeleton from "../components/DashboardSkeleton";
 
-const API_URL = process.env.REACT_APP_API_URL || "";
-
 export default function Dashboard() {
   const [summary, setSummary] = useState({ income: 0, expenses: 0, balance: 0 });
   const [transactions, setTransactions] = useState([]);
@@ -24,29 +22,28 @@ export default function Dashboard() {
   const token = localStorage.getItem("access");
 
   // Fetch dashboard data
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!token) return navigate("/");
     try {
-      const summaryRes = await axios.get(`${API_URL}/api/dashboard/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const summaryRes = await axiosInstance.get(`/api/dashboard/`);
       setSummary(summaryRes.data);
 
-      const transactionsRes = await axios.get(`${API_URL}/api/transactions/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const transactionsRes = await axiosInstance.get(`/api/transactions/`);
       setTransactions(transactionsRes.data);
     } catch (err) {
       console.error(err);
-      alert("Failed to fetch dashboard data. Please login again.");
+      // The axios interceptor will handle 401s. This will catch other errors.
+      if (err.response?.status !== 401) {
+        alert("Failed to fetch dashboard data. The server might be down.");
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate, token]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // Transaction handlers
   const handleAddTransaction = (newTransaction) => {
@@ -63,9 +60,7 @@ export default function Dashboard() {
   const handleDeleteTransaction = async (id) => {
     if (!window.confirm("Are you sure you want to delete this transaction?")) return;
     try {
-      await axios.delete(`${API_URL}/api/transactions/${id}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.delete(`/api/transactions/${id}/`);
       setTransactions(transactions.filter((t) => t.id !== id));
       fetchData();
     } catch (err) {
