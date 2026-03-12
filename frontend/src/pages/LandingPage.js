@@ -349,6 +349,11 @@ export default function LandingPage() {
             alert('Activation link is invalid or has expired. Please try registering again.');
             // Clean the URL
             navigate('/', { replace: true });
+        } else if (params.get('sessionExpired') === 'true') {
+            alert('Your session has expired. Please log in again.');
+            setRegisterOpen(false);
+            setLoginOpen(true);
+            navigate('/', { replace: true });
         }
     }, [navigate]);
 

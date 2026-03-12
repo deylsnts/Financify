@@ -39,13 +39,19 @@ axiosInstance.interceptors.response.use(
                     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
                     
                     // Retry the original request with the new token
+                    originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
                     return axiosInstance(originalRequest);
                 } catch (refreshError) {
                     console.error("Refresh token is invalid, logging out.", refreshError);
                     localStorage.removeItem('access');
                     localStorage.removeItem('refresh');
-                    window.location.href = '/'; // Redirect to login
+                    window.location.href = '/?sessionExpired=true'; // Redirect to login
                 }
+            } else {
+                // No refresh token available, logout immediately
+                localStorage.removeItem('access');
+                localStorage.removeItem('refresh');
+                window.location.href = '/?sessionExpired=true';
             }
         }
         return Promise.reject(error);
