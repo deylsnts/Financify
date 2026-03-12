@@ -19,6 +19,6 @@
 
     { "handle": "filesystem" },
 
-    { "src": "^/(.*)", "dest": "/frontend/build/index.html" }
+    { "src": "^/(.*)", "dest": "/frontend/index.html" }
   ]
 }
