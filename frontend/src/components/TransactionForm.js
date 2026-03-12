@@ -131,98 +131,122 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 h-fit transition-colors duration-300">
-      <div className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 sm:p-7 border border-gray-100 dark:border-gray-700 transition-colors duration-300"
+    >
+      <div className="space-y-5">
+
+        {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-        <input
-          placeholder="Title"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          required
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-        />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
-        <input
-          type="number"
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-          placeholder="Amount"
-          value={form.amount}
-          onChange={(e) => setForm({ ...form, amount: e.target.value })}
-          required
-        />
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
+            Title
+          </label>
+          <input
+            placeholder="Example: Grocery Shopping"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            required
+            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          />
         </div>
 
+        {/* Amount */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-        <select
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-          value={form.category}
-          onChange={(e) => {
-            const newCategory = e.target.value;
-            let newType = form.type;
-            if (newCategory === "income") {
-              newType = "income";
-            } else if (newCategory !== "") {
-              newType = "expense";
-            }
-            setForm({ ...form, category: newCategory, type: newType });
-          }}
-          required
-        >
-          <option value="">Select Category</option>
-          {CATEGORY_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
+            Amount
+          </label>
+          <input
+            type="number"
+            inputMode="decimal"
+            placeholder="0.00"
+            value={form.amount}
+            onChange={(e) => setForm({ ...form, amount: e.target.value })}
+            required
+            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          />
         </div>
 
+        {/* Category */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
-        <input
-          type="date"
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-          value={form.date}
-          onChange={(e) => setForm({ ...form, date: e.target.value })}
-          required
-          max={maxDate}
-        />
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
+            Category
+          </label>
+          <select
+            value={form.category}
+            onChange={(e) => {
+              const newCategory = e.target.value;
+              let newType = form.type;
+
+              if (newCategory === "income") newType = "income";
+              else if (newCategory !== "") newType = "expense";
+
+              setForm({ ...form, category: newCategory, type: newType });
+            }}
+            required
+            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          >
+            <option value="">Select Category</option>
+            {CATEGORY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Date */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
-        <select
-          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-          value={form.type}
-          onChange={(e) => {
-            const newType = e.target.value;
-            let newCategory = form.category;
-            if (newType === "income") {
-              newCategory = "income";
-            } else if (newType === "expense" && newCategory === "income") {
-              newCategory = "";
-            }
-            setForm({ ...form, type: newType, category: newCategory });
-          }}
-        >
-          <option value="expense">Expense</option>
-          <option value="income">Income</option>
-        </select>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
+            Date
+          </label>
+          <input
+            type="date"
+            value={form.date}
+            onChange={(e) => setForm({ ...form, date: e.target.value })}
+            required
+            max={maxDate}
+            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          />
+        </div>
+
+        {/* Type */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
+            Type
+          </label>
+          <select
+            value={form.type}
+            onChange={(e) => {
+              const newType = e.target.value;
+              let newCategory = form.category;
+
+              if (newType === "income") newCategory = "income";
+              else if (newType === "expense" && newCategory === "income") newCategory = "";
+
+              setForm({ ...form, type: newType, category: newCategory });
+            }}
+            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+          >
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
         </div>
       </div>
 
-      <div className="flex gap-3 mt-6">
-        <button className="flex-1 bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm">
-          {editingTransaction ? "Update" : "Add"}
+      {/* Buttons */}
+      <div className="flex gap-3 mt-7">
+        <button
+          className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-md"
+        >
+          {editingTransaction ? "Update Transaction" : "Add Transaction"}
         </button>
+
         {editingTransaction && (
           <button
             type="button"
             onClick={() => setEditingTransaction(null)}
-            className="flex-1 bg-gray-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-gray-600 transition shadow-sm"
+            className="flex-1 bg-gray-400 text-white py-3 rounded-xl font-semibold hover:bg-gray-500 transition"
           >
             Cancel
           </button>
