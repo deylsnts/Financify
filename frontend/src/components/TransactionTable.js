@@ -12,13 +12,14 @@ const CATEGORY_LABELS = {
   savings_investments: "Savings & Investments"
 };
 
-export default function TransactionTable({ transactions, onDelete, onEdit }) {
+export default function TransactionTable({ transactions, onDelete, onEdit, theme }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+    const [searchTerm, setSearchTerm] = useState("");
 
   const totalPages = Math.ceil(transactions.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTransactions = transactions.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
@@ -27,6 +28,11 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
     }
   }, [transactions.length, totalPages, currentPage]);
 
+    // Filter transactions based on search term
+    const filteredTransactions = transactions.filter(tx => {
+        const searchLower = searchTerm.toLowerCase();
+        return tx.title.toLowerCase().includes(searchLower) || tx.category.toLowerCase().includes(searchLower);
+    });
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 h-full flex flex-col transition-colors duration-300">
       {transactions.length === 0 ? (
@@ -34,7 +40,22 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
       ) : (
         <>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+            {/* Search Bar */}
+            <div className="relative mb-4">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className={`h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input
+                    type="text"
+                    placeholder="Search transactions..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 block w-full shadow-sm sm:text-sm rounded-xl py-2.5 outline-none ring-2 ring-transparent focus:ring-indigo-500 transition-all dark:bg-slate-800 dark:text-white dark:placeholder-gray-400"
+                />
+            </div>
+            <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-700">
@@ -47,7 +68,7 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {currentTransactions.map((tx) => (
+              {filteredTransactions.slice(indexOfFirstItem, indexOfLastItem).map((tx) => (
                 <tr key={tx.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{tx.date}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{tx.title}</td>
@@ -86,7 +107,7 @@ export default function TransactionTable({ transactions, onDelete, onEdit }) {
 
           {/* Mobile Card View (PWA Friendly) */}
           <div className="md:hidden space-y-4">
-            {currentTransactions.map((tx) => (
+            {filteredTransactions.slice(indexOfFirstItem, indexOfLastItem).map((tx) => (
               <div key={tx.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl border border-gray-100 dark:border-gray-600 shadow-sm">
                 <div className="flex justify-between items-start mb-2">
                   <div>

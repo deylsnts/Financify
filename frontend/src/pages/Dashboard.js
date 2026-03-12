@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [summary, setSummary] = useState({ income: 0, expenses: 0, balance: 0 });
   const [transactions, setTransactions] = useState([]);
   const [editingTransaction, setEditingTransaction] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -193,6 +194,8 @@ export default function Dashboard() {
               transactions={filteredTransactions}
               onDelete={handleDeleteTransaction}
               onEdit={setEditingTransaction}
+              setSearchTerm={setSearchTerm}
+              searchTerm={searchTerm} 
               theme={theme}
             />
           </motion.div>
