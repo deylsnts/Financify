@@ -4,11 +4,12 @@
     {
       "src": "finance_tracker/finance_tracker/wsgi.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
+      "config": { "maxLambdaSize": "50mb", "runtime": "python3.9" }
     },
     {
       "src": "frontend/package.json",
-      "use": "@vercel/static-build"
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
     }
   ],
   "routes": [
@@ -16,8 +17,9 @@
     { "src": "^/admin/(.*)", "dest": "finance_tracker/finance_tracker/wsgi.py" },
     { "src": "^/django_static/(.*)", "dest": "finance_tracker/finance_tracker/wsgi.py" },
 
-    { "handle": "filesystem" },
+    { "src": "^/static/(.*)", "dest": "/frontend/build/static/$1" },
+    { "src": "^/$", "dest": "/frontend/build/index.html" },
 
-    { "src": "^/(.*)", "dest": "/frontend/index.html" }
+    { "src": "^/(.*)", "dest": "/frontend/build/index.html" }
   ]
 }
