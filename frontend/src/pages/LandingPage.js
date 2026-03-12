@@ -265,6 +265,41 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     );
 }
 
+// --- Install Modal ---
+function InstallModal({ isOpen, onClose, onInstall }) {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="bg-slate-900/90 backdrop-blur-lg border border-slate-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm relative text-center"
+            >
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-xl"
+                >
+                    ×
+                </button>
+
+                <h2 className="text-2xl font-bold mb-4 text-white">Install Financify App</h2>
+                <p className="text-slate-400 mb-6">
+                    Enjoy quick access to your dashboard and track your finances anytime, offline-ready.
+                </p>
+
+                <button
+                    onClick={onInstall}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-6 rounded-xl font-semibold transition-transform hover:scale-105"
+                >
+                    Install Now
+                </button>
+            </motion.div>
+        </div>
+    );
+}
+
 // --- Icon Components for Features ---
 const TrackingIcon = () => (
     <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -300,6 +335,7 @@ export default function LandingPage() {
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [isRegisterOpen, setRegisterOpen] = useState(false);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [showInstallPopup, setShowInstallPopup] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -340,15 +376,24 @@ export default function LandingPage() {
 
     const handleInstallClick = () => {
         if (deferredPrompt) {
+            // Instead of calling prompt() immediately, show your custom modal
+            setShowInstallPopup(true);
+        }
+    };
+
+    const handleConfirmInstall = () => {
+        if (deferredPrompt) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('User accepted the install prompt');
                 }
                 setDeferredPrompt(null);
+                setShowInstallPopup(false);
             });
         }
     };
+
 
     const openLogin = () => {
         setRegisterOpen(false);
@@ -548,6 +593,11 @@ export default function LandingPage() {
             {/* Modals */}
             <LoginModal isOpen={isLoginOpen} onClose={closeModals} onSwitchToRegister={openRegister} />
             <RegisterModal isOpen={isRegisterOpen} onClose={closeModals} onSwitchToLogin={openLogin} />
+            <InstallModal
+                isOpen={showInstallPopup}
+                onClose={() => setShowInstallPopup(false)}
+                onInstall={handleConfirmInstall}
+            />
             </main>
         </div>
     );
