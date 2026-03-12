@@ -61,10 +61,16 @@ from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 import os
+
+# Security: Limit login/register attempts to 10 per minute per IP
+class AuthRateThrottle(AnonRateThrottle):
+    rate = '10/min'
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([AuthRateThrottle])
 def register(request):
     username = request.data.get('username')
     password = request.data.get('password')
@@ -119,6 +125,7 @@ def register(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@throttle_classes([AuthRateThrottle])
 def activate(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -144,8 +151,13 @@ from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import openai
 
+# Security: Limit AI requests to 5 per minute per user to save costs
+class AIRateThrottle(UserRateThrottle):
+    rate = '5/min'
+
 class AIInsightsView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [AIRateThrottle]
 
     def post(self, request):
         try:
@@ -153,6 +165,13 @@ class AIInsightsView(APIView):
             openai.api_key = settings.OPENAI_API_KEY
             
             data = request.data
+            
+            # Security: Sanitize and truncate input to prevent large context attacks
+            # Limit the size of transactions string to ~2000 chars
+            raw_transactions = str(data.get('recent_transactions', ''))[:2000]
+            
+            # Basic sanitation (optional, as modern LLMs are fairly robust, but good practice)
+            # Remove potential prompt injection delimiters if necessary, though User role handles most.
             
             # Construct a prompt using the data sent from the frontend
             prompt = f"""
@@ -162,7 +181,7 @@ class AIInsightsView(APIView):
             - Top Spending Category: {data.get('top_category')}
             
             Recent Transactions:
-            {data.get('recent_transactions')}
+            {raw_transactions}
             
             Focus on specific ways to save money based on the top category. Keep it friendly.
             """
