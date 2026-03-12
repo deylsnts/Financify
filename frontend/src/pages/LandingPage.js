@@ -299,6 +299,7 @@ export default function LandingPage() {
     const navigate = useNavigate();
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [isRegisterOpen, setRegisterOpen] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -314,6 +315,40 @@ export default function LandingPage() {
             navigate('/', { replace: true });
         }
     }, [navigate]);
+
+    // PWA Install Prompt Listener
+    useEffect(() => {
+        const handleBeforeInstallPrompt = (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            setDeferredPrompt(e);
+        };
+
+        const handleAppInstalled = () => {
+            setDeferredPrompt(null);
+        };
+
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener('appinstalled', handleAppInstalled);
+
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener('appinstalled', handleAppInstalled);
+        };
+    }, []);
+
+    const handleInstallClick = () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                setDeferredPrompt(null);
+            });
+        }
+    };
 
     const openLogin = () => {
         setRegisterOpen(false);
@@ -413,6 +448,19 @@ export default function LandingPage() {
                         >
                             Get Started Free
                         </button>
+                        {deferredPrompt && (
+                            <button
+                                onClick={handleInstallClick}
+                                className="flex items-center gap-3 px-6 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 group backdrop-blur-sm"
+                            >
+                                <div className="p-1 rounded-full bg-emerald-500/20 group-hover:bg-emerald-500/30 transition-colors">
+                                    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </div>
+                                <span className="text-emerald-400 font-semibold group-hover:text-emerald-300">Install App</span>
+                            </button>
+                        )}
                     </motion.div>
                 </div>
 
