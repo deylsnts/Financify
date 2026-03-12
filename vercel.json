@@ -15,8 +15,7 @@
   "routes": [
     { "src": "^/api/(.*)", "dest": "finance_tracker/finance_tracker/wsgi.py" },
     { "src": "^/admin/(.*)", "dest": "finance_tracker/finance_tracker/wsgi.py" },
-
-    { "src": "^/django_static/(.*)", "dest": "finance_tracker/finance_tracker/staticfiles/$1" },
+    { "src": "^/django_static/(.*)", "dest": "finance_tracker/finance_tracker/wsgi.py" },
 
     { "src": "^/static/(.*)", "dest": "/frontend/build/static/$1" },
     { "src": "^/$", "dest": "/frontend/build/index.html" },
