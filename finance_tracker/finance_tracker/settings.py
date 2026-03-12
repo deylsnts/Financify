@@ -25,10 +25,10 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-8lp!k@!8fy1(v#m*svw)%j00oxp*%1ltug3&@q@^qzhg!&&4!y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # hardcoded for production
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app', 'https://*.now.sh']
