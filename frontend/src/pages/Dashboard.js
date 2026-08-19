@@ -59,7 +59,6 @@ export default function Dashboard() {
   };
 
   const handleDeleteTransaction = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this transaction?")) return;
     try {
       await axiosInstance.delete(`/api/transactions/${id}/`);
       setTransactions(transactions.filter((t) => t.id !== id));
