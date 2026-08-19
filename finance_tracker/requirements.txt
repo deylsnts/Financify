@@ -2,7 +2,7 @@ Django>=4.2,<5.0
 djangorestframework
 django-cors-headers
 python-dotenv
-openai
+anthropic
 gunicorn
 whitenoise
 requests

@@ -137,9 +137,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get('FRONTEND_URL', 'http://localhost:3000').split(',')
+    if origin.strip()
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [r'^https://.*\.vercel\.app$']
+CORS_ALLOW_CREDENTIALS = True
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 
 # Email Configuration
 if 'BREVO_SMTP_SERVER' in os.environ:

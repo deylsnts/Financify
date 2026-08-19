@@ -101,28 +101,28 @@ export default function Dashboard() {
       {({ theme }) => (
         <>
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between md:items-end items-center gap-6 mb-6">
+          <div className="flex flex-col md:flex-row justify-between md:items-end items-center gap-6 mb-8">
             <div className="text-center md:text-left">
               <h1 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                 Dashboard
               </h1>
-              <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-700"} mt-2 text-lg`}>
+              <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-600"} mt-1.5 text-base sm:text-lg`}>
                 Your financial overview at a glance
               </p>
             </div>
 
             {/* Filter Buttons */}
-            <div className={`p-1.5 rounded-xl shadow-md w-full md:w-auto flex ${theme === "dark" ? "bg-slate-800" : "bg-gray-200"}`}>
+            <div className={`p-1.5 rounded-xl shadow-soft w-full md:w-auto flex ${theme === "dark" ? "bg-slate-900 border border-slate-800" : "bg-white border border-gray-200"}`}>
               {["all", "weekly", "monthly", "yearly"].map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`flex-1 text-center px-3 sm:px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  className={`flex-1 text-center px-3 sm:px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500 ${
                     filter === f
                       ? "bg-indigo-600 text-white shadow-md"
                       : theme === "dark"
-                      ? "text-gray-400 hover:bg-slate-700 hover:text-white"
-                      : "text-gray-700 hover:bg-gray-300 hover:text-black"
+                      ? "text-gray-400 hover:bg-slate-800 hover:text-white"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -130,8 +130,6 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-
-          <div className={`h-px w-full mb-8 ${theme === "dark" ? "bg-slate-700" : "bg-gray-300"}`}></div>
 
           {/* Dashboard Cards */}
           <motion.div className="mb-10 gap-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

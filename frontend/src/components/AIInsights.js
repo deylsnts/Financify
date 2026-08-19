@@ -87,11 +87,11 @@ export default function AIInsights({ transactions }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 mb-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+    <div className="bg-white dark:bg-slate-900 shadow-soft rounded-2xl p-6 mb-8 border border-gray-100 dark:border-slate-800 transition-colors duration-300">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-2.5 bg-purple-100 dark:bg-purple-500/15 rounded-xl">
+                <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
             </div>
@@ -100,9 +100,9 @@ export default function AIInsights({ transactions }) {
 
         {/* Local Stat (Instant) */}
         {stats && (
-            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="mb-6 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
                 <p className="text-gray-700 dark:text-gray-200">
-                    You spent <span className={`font-bold ${stats.isHigher ? 'text-red-600' : 'text-green-600'}`}>
+                    You spent <span className={`font-bold ${stats.isHigher ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                         {Math.abs(stats.percentChange)}% {stats.isHigher ? 'more' : 'less'}
                     </span> on <span className="font-semibold capitalize text-gray-900 dark:text-white">{stats.topCategory.replace('_', ' ')}</span> compared to last month.
                 </p>
@@ -111,16 +111,19 @@ export default function AIInsights({ transactions }) {
 
         {/* AI Button & Result */}
         {!insight && !loading && (
-            <button 
+            <button
                 onClick={generateAIInsights}
-                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transform transition hover:-translate-y-0.5"
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transform transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500 flex items-center justify-center gap-2"
             >
-                Generate Smart Advice 🤖
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Generate Smart Advice
             </button>
         )}
 
         {loading && (
-            <div className="flex items-center justify-center py-4 space-x-2 text-purple-600 animate-pulse">
+            <div className="flex items-center justify-center py-4 space-x-2 text-purple-600 dark:text-purple-400">
                 <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -130,15 +133,21 @@ export default function AIInsights({ transactions }) {
         )}
 
         {error && (
-             <p className="text-red-500 text-sm text-center mt-4">{error}</p>
+             <p className="text-rose-500 text-sm text-center mt-4">{error}</p>
         )}
 
         {insight && (
-            <div className="mt-4 p-5 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800 relative">
+            <div className="mt-4 p-5 bg-purple-50 dark:bg-purple-500/10 rounded-xl border border-purple-100 dark:border-purple-800/50 relative">
                 <h3 className="text-sm font-bold text-purple-800 dark:text-purple-300 uppercase mb-2 tracking-wide">AI Recommendation</h3>
-                <p className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-line">{insight}</p>
-                <button onClick={() => setInsight("")} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
-                    ✕
+                <p className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-line pr-6">{insight}</p>
+                <button
+                    onClick={() => setInsight("")}
+                    aria-label="Dismiss recommendation"
+                    className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-500 rounded"
+                >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
         )}

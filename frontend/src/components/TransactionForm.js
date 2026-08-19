@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 
 const CATEGORY_OPTIONS = [
   { value: "income", label: "Income" },
@@ -11,8 +11,6 @@ const CATEGORY_OPTIONS = [
   { value: "debt_finance", label: "Debt & Finance" },
   { value: "savings_investments", label: "Savings & Investments" }
 ];
-
-const API_URL = process.env.REACT_APP_API_URL || "";
 
 export default function TransactionForm({ onAdd, onUpdate, editingTransaction, setEditingTransaction }) {
   const now = new Date();
@@ -64,47 +62,22 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
       return;
     }
 
-    const token = localStorage.getItem("access");
-    if (!token) {
+    if (!localStorage.getItem("access")) {
       alert("You must be logged in!");
       return;
     }
 
-    // Helper to extract user_id from JWT token
-    const getUserId = (token) => {
-      try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        return payload.user_id;
-      } catch (e) {
-        return null;
-      }
-    };
-
     try {
       if (editingTransaction) {
-        const response = await axios.put(
-          `${API_URL}/api/transactions/${editingTransaction.id}/`,
-          {
-            ...form,
-            amount: parseFloat(form.amount),
-            user: getUserId(token),
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+        const response = await axiosInstance.put(
+          `/api/transactions/${editingTransaction.id}/`,
+          { ...form, amount: parseFloat(form.amount) }
         );
         onUpdate(response.data);
       } else {
-        const response = await axios.post(
-          `${API_URL}/api/transactions/`,
-          {
-            ...form,
-            amount: parseFloat(form.amount),
-            user: getUserId(token), // Send user ID extracted from token
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+        const response = await axiosInstance.post(
+          `/api/transactions/`,
+          { ...form, amount: parseFloat(form.amount) }
         );
         onAdd(response.data); // Add to frontend state
         setForm({
@@ -133,7 +106,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 sm:p-7 border border-gray-100 dark:border-gray-700 transition-colors duration-300"
+      className="bg-white dark:bg-slate-900 shadow-soft rounded-2xl p-6 sm:p-7 border border-gray-100 dark:border-slate-800 transition-colors duration-300"
     >
       <div className="space-y-5">
 
@@ -147,7 +120,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
-            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+            className="w-full text-base bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           />
         </div>
 
@@ -156,15 +129,20 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
           <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
             Amount
           </label>
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder="0.00"
-            value={form.amount}
-            onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            required
-            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-          />
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 font-medium">₱</span>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={form.amount}
+              onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              required
+              className="w-full text-base bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 pl-7 pr-3 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+            />
+          </div>
         </div>
 
         {/* Category */}
@@ -184,7 +162,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
               setForm({ ...form, category: newCategory, type: newType });
             }}
             required
-            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+            className="w-full text-base bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           >
             <option value="">Select Category</option>
             {CATEGORY_OPTIONS.map((opt) => (
@@ -206,7 +184,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
             onChange={(e) => setForm({ ...form, date: e.target.value })}
             required
             max={maxDate}
-            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+            className="w-full text-base bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           />
         </div>
 
@@ -226,7 +204,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
 
               setForm({ ...form, type: newType, category: newCategory });
             }}
-            className="w-full text-base bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+            className="w-full text-base bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
           >
             <option value="expense">Expense</option>
             <option value="income">Income</option>
@@ -237,7 +215,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
       {/* Buttons */}
       <div className="flex gap-3 mt-7">
         <button
-          className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-md"
+          className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 active:bg-indigo-800 transition shadow-md shadow-indigo-600/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
         >
           {editingTransaction ? "Update Transaction" : "Add Transaction"}
         </button>
@@ -246,7 +224,7 @@ export default function TransactionForm({ onAdd, onUpdate, editingTransaction, s
           <button
             type="button"
             onClick={() => setEditingTransaction(null)}
-            className="flex-1 bg-gray-400 text-white py-3 rounded-xl font-semibold hover:bg-gray-500 transition"
+            className="flex-1 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-slate-700 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
           >
             Cancel
           </button>
