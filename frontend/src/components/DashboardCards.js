@@ -3,11 +3,11 @@ import React from "react";
 
 export default function DashboardCards({ income, expenses, balance, theme = "dark" }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card
         title="Income"
         value={income}
-        accent="emerald"
+        color="green"
         icon={
           <path
             strokeLinecap="round"
@@ -21,7 +21,7 @@ export default function DashboardCards({ income, expenses, balance, theme = "dar
       <Card
         title="Expenses"
         value={expenses}
-        accent="rose"
+        color="red"
         icon={
           <path
             strokeLinecap="round"
@@ -35,7 +35,7 @@ export default function DashboardCards({ income, expenses, balance, theme = "dar
       <Card
         title="Balance"
         value={balance}
-        accent="indigo"
+        color="blue"
         icon={
           <path
             strokeLinecap="round"
@@ -50,44 +50,29 @@ export default function DashboardCards({ income, expenses, balance, theme = "dar
   );
 }
 
-const ACCENTS = {
-  emerald: {
-    iconBg: "bg-emerald-100 dark:bg-emerald-500/15",
-    iconText: "text-emerald-600 dark:text-emerald-400",
-    ring: "hover:border-emerald-300 dark:hover:border-emerald-500/40",
-    valueText: "text-gray-900 dark:text-white",
-  },
-  rose: {
-    iconBg: "bg-rose-100 dark:bg-rose-500/15",
-    iconText: "text-rose-600 dark:text-rose-400",
-    ring: "hover:border-rose-300 dark:hover:border-rose-500/40",
-    valueText: "text-gray-900 dark:text-white",
-  },
-  indigo: {
-    iconBg: "bg-indigo-100 dark:bg-indigo-500/15",
-    iconText: "text-indigo-600 dark:text-indigo-400",
-    ring: "hover:border-indigo-300 dark:hover:border-indigo-500/40",
-    valueText: "text-gray-900 dark:text-white",
-  },
-};
+function Card({ title, value, color, icon, theme }) {
+  const colors = {
+    green: theme === "dark" ? "from-green-500 to-emerald-600" : "from-green-400 to-green-500",
+    red: theme === "dark" ? "from-red-500 to-rose-600" : "from-red-400 to-red-500",
+    blue: theme === "dark" ? "from-blue-500 to-indigo-600" : "from-blue-400 to-blue-500",
+  };
 
-function Card({ title, value, accent, icon, theme }) {
-  const a = ACCENTS[accent];
-  const amount = Number(value);
+  const textColor = theme === "dark" ? "text-white" : "text-gray-900";
+  const bgOpacity = theme === "dark" ? "bg-opacity-20" : "bg-opacity-10";
 
   return (
     <div
-      className={`group relative p-6 rounded-2xl border bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${a.ring}`}
+      className={`p-6 rounded-2xl shadow-lg ${textColor} bg-gradient-to-br ${colors[color]} transform transition hover:scale-105 duration-200`}
     >
       <div className="flex justify-between items-start">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{title}</p>
-          <h3 className={`text-2xl sm:text-3xl font-extrabold mt-1.5 tabular-nums truncate ${a.valueText}`}>
-            ₱{amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-          </h3>
+        <div>
+          <p className="text-sm font-medium opacity-90">{title}</p>
+          <h3 className="text-3xl font-bold mt-1">₱{Number(value).toLocaleString()}</h3>
         </div>
-        <div className={`p-2.5 rounded-xl shrink-0 ${a.iconBg}`}>
-          <svg className={`w-5 h-5 ${a.iconText}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div
+          className={`p-3 rounded-lg ${bgOpacity} ${theme === "dark" ? "bg-white/20" : "bg-gray-200/20"}`}
+        >
+          <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             {icon}
           </svg>
         </div>

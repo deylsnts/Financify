@@ -103,21 +103,21 @@ export default function Analytics({ transactions }) {
     <div className="space-y-6 mb-6">
       {/* 1. Cash Flow Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Net Savings</p>
           <p className={`text-2xl font-bold ${netSavings >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             ₱{netSavings.toLocaleString()}
           </p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Savings Rate</p>
           <p className="text-2xl font-bold text-blue-600">{savingsRate.toFixed(1)}%</p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Needs (Fixed)</p>
           <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">₱{spendingByType.needs.toLocaleString()}</p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Wants (Variable)</p>
           <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">₱{spendingByType.wants.toLocaleString()}</p>
         </div>
@@ -125,7 +125,7 @@ export default function Analytics({ transactions }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 2. Expense Breakdown */}
-        <div className="bg-white dark:bg-slate-900 shadow-lg rounded-2xl p-6 transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 transition-colors duration-300">
           <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Spending by Category</h2>
           {categoryBreakdown.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400 text-center py-4">No expenses yet.</p>
@@ -137,7 +137,7 @@ export default function Analytics({ transactions }) {
                     <span>{CATEGORY_LABELS[item.category] || item.category}</span>
                     <span>₱{item.amount.toLocaleString()} ({item.percentage.toFixed(1)}%)</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                     <div
                       className={`h-2.5 rounded-full ${COLORS[index % COLORS.length]}`}
                       style={{ width: `${item.percentage}%` }}
@@ -150,7 +150,7 @@ export default function Analytics({ transactions }) {
         </div>
 
         {/* 3. Monthly Trends Chart */}
-        <div className="bg-white dark:bg-slate-900 shadow-lg rounded-2xl p-6 flex flex-col transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col transition-colors duration-300">
           <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Income vs Expense Trend</h2>
           <div className="flex-1 flex items-end justify-between space-x-2 min-h-[200px] pt-4">
             {monthlyData.length === 0 ? (

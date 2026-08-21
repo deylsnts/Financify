@@ -13,7 +13,7 @@ const SkeletonCard = () => (
 );
 
 const DashboardSkeleton = ({ theme }) => {
-    const bgColor = theme === 'dark' ? 'bg-slate-900' : 'bg-white';
+    const bgColor = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
     const pulseColor = theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200';
     const pulseText = theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300';
 

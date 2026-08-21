@@ -8,25 +8,20 @@ function AuthModal({ isOpen, onClose, title, children }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-slate-900/95 backdrop-blur-lg border border-slate-800 rounded-2xl shadow-2xl p-8 w-full max-w-md relative"
+                className="bg-slate-900/80 backdrop-blur-lg border border-slate-800 rounded-2xl shadow-2xl p-8 w-full max-w-md relative"
             >
                 <button
                     onClick={onClose}
-                    aria-label="Close dialog"
-                    className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                    className="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-xl"
                 >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    ×
                 </button>
-                <h2 className="text-2xl font-bold text-center mb-6 tracking-tight">{title}</h2>
+                <h2 className="text-2xl font-bold text-center mb-6">{title}</h2>
                 {children}
             </motion.div>
         </div>
@@ -108,7 +103,7 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
                             placeholder="Username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                             required
                         />
                         <input
@@ -116,10 +111,10 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                             required
                         />
-                        <button className="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-semibold transition disabled:opacity-50" disabled={loading}>
+                        <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition disabled:opacity-50" disabled={loading}>
                             {loading ? "Signing In..." : "Sign In"}
                         </button>
                     </form>
@@ -128,7 +123,7 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
                     <p className="text-center mt-4 text-slate-400 text-sm">
                         Don't have an account?{" "}
-                        <span onClick={onSwitchToRegister} className="text-indigo-400 cursor-pointer hover:text-indigo-300 transition">
+                        <span onClick={onSwitchToRegister} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
                             Sign up
                         </span>
                     </p>
@@ -224,7 +219,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
                             placeholder="Username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                             required
                         />
                         <input
@@ -232,7 +227,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
                             placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                             required
                         />
                         <input
@@ -240,7 +235,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
                             placeholder="Password (min. 8 characters)"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                             required
                         />
                         <input
@@ -248,10 +243,10 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
                             placeholder="Confirm Password"
                             value={password2}
                             onChange={(e) => setPassword2(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                            className="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"
                             required
                         />
-                        <button className="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-semibold transition disabled:opacity-50" disabled={loading}>
+                        <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold transition disabled:opacity-50" disabled={loading}>
                             {loading ? "Signing Up..." : "Sign Up"}
                         </button>
                     </form>
@@ -260,7 +255,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
 
                     <p className="text-center mt-4 text-slate-400 text-sm">
                         Already have an account?{" "}
-                        <span onClick={onSwitchToLogin} className="text-indigo-400 cursor-pointer hover:text-indigo-300 transition">
+                        <span onClick={onSwitchToLogin} className="text-blue-500 cursor-pointer hover:text-blue-400 transition">
                             Sign in
                         </span>
                     </p>
@@ -307,13 +302,13 @@ function InstallModal({ isOpen, onClose, onInstall }) {
 
 // --- Icon Components for Features ---
 const TrackingIcon = () => (
-    <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+    <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
 );
 const DashboardIcon = () => (
-    <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+    <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
 );
 const AnalyticsIcon = () => (
-    <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" /></svg>
+    <svg className="w-6 h-6 mb-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" /></svg>
 );
 
 const features = [
@@ -421,49 +416,41 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white relative overflow-x-hidden">
+        <div className="min-h-screen bg-slate-950 text-white relative">
             {/* Background Glows */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-0 -left-1/4 w-full h-full bg-gradient-to-r from-indigo-600/25 to-transparent filter blur-3xl opacity-30 transform -rotate-45 animate-floatSlow"></div>
-                <div className="absolute bottom-0 -right-1/4 w-full h-full bg-gradient-to-l from-blue-600/25 to-transparent filter blur-3xl opacity-30 transform rotate-45 animate-floatSlow" style={{ animationDelay: "-4s" }}></div>
-                <div
-                    className="absolute inset-0 opacity-[0.04]"
-                    style={{
-                        backgroundImage:
-                            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
-                        backgroundSize: "56px 56px",
-                    }}
-                ></div>
+                <div className="absolute top-0 -left-1/4 w-full h-full bg-gradient-to-r from-indigo-600/30 to-transparent filter blur-3xl opacity-20 transform -rotate-45"></div>
+                <div className="absolute bottom-0 -right-1/4 w-full h-full bg-gradient-to-l from-blue-600/30 to-transparent filter blur-3xl opacity-20 transform rotate-45"></div>
             </div>
 
             {/* Navbar */}
             <header className="sticky top-0 z-50">
-            <nav className="bg-slate-950/70 backdrop-blur-lg border-b border-slate-800/80">
+            <nav className="bg-slate-950/60 backdrop-blur-lg border-b border-slate-800">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
                     {/* Logo + Brand */}
-                    <div className="flex items-center gap-2">
-                        <img
-                            src="/financify-icon.png"
-                            alt="Financify Logo"
-                            className="w-9 h-9 rounded-xl object-cover shadow-glow"
+                    <div className="flex items-center gap-1">
+                        <img 
+                            src="/financify-icon.png" 
+                            alt="Financify Logo" 
+                            className="w-10 h-10 rounded-lg object-cover" 
                         />
-                        <h1 className="text-xl font-bold text-white tracking-tight">
-                            Financ<span className="text-indigo-400">ify</span>
+                        <h1 className="text-xl font-bold text-white">
+                            Financ<span className="text-indigo-600">ify</span>
                         </h1>
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex gap-2 sm:gap-4 items-center">
+                    <div className="flex gap-4">
                         <button
                             onClick={openLogin}
-                            className="text-slate-300 hover:text-white font-medium transition px-3 py-2 rounded-lg hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                            className="text-slate-300 hover:text-white font-medium transition"
                         >
                             Login
                         </button>
                         <button
                             onClick={openRegister}
-                            className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-xl text-white font-semibold transition shadow-md shadow-indigo-600/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                            className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl text-white font-semibold transition"
                         >
                             Sign Up
                         </button>
@@ -474,42 +461,32 @@ export default function LandingPage() {
 
             {/* Hero */}
             <main>
-            <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-20 pb-8 grid md:grid-cols-2 gap-16 items-center">
-                <div className="md:mt-[-2rem]">
-                    <motion.div
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-6"
-                    >
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-                        Now with Claude-powered insights
-                    </motion.div>
-
+            <section className="max-w-6xl mx-auto px-6 pt-20 pb-8 grid md:grid-cols-2 gap-16 items-center">
+                <div className="md:mt-[-4rem]">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.05 }}
-                        className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tighter leading-[1.05]"
+                        transition={{ duration: 0.5 }}
+                        className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tighter"
                     >
                         Track Your Money,
                         <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-indigo-300 to-blue-400">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-blue-400">
                             Simplify Your Life.
                         </span>
                     </motion.h1>
 
-                    <motion.p
+                    <motion.p 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-lg text-slate-400 mb-10 max-w-lg leading-relaxed"
+                        className="text-lg text-slate-400 mb-10 max-w-lg"
                     >
                         Financify is the modern, intuitive finance tracker that helps you
                         understand your spending and grow your savings effortlessly.
                     </motion.p>
 
-                    <motion.div
+                    <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
@@ -517,14 +494,14 @@ export default function LandingPage() {
                     >
                         <button
                             onClick={openRegister}
-                            className="bg-indigo-600 hover:bg-indigo-500 px-8 py-3.5 rounded-xl text-white font-semibold transition-all hover:scale-[1.03] active:scale-[0.98] shadow-lg shadow-indigo-600/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                            className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-xl text-white font-semibold transition-transform hover:scale-105 shadow-lg shadow-indigo-600/20"
                         >
                             Get Started Free
                         </button>
                         {deferredPrompt && (
                             <button
                                 onClick={handleInstallClick}
-                                className="flex items-center gap-3 px-6 py-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 group backdrop-blur-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+                                className="flex items-center gap-3 px-6 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 group backdrop-blur-sm"
                             >
                                 <div className="p-1 rounded-full bg-emerald-500/20 group-hover:bg-emerald-500/30 transition-colors">
                                     <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -535,15 +512,6 @@ export default function LandingPage() {
                             </button>
                         )}
                     </motion.div>
-
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="text-sm text-slate-500 mt-6"
-                    >
-                        Free forever. No credit card required.
-                    </motion.p>
                 </div>
 
                 <motion.div
@@ -594,15 +562,15 @@ export default function LandingPage() {
             </section>
 
             {/* Features */}
-            <section className="max-w-6xl mx-auto px-6 py-20">
+            <section className="max-w-6xl mx-auto px-6 py-10">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight">Everything You Need to Succeed</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-3">Everything You Need to Succeed</h2>
                     <p className="text-slate-400">
                         Financify is packed with powerful features designed to give you clarity and control.
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-5 mt-10">
+                <div className="grid md:grid-cols-3 gap-5 mt-8">
                 {features.map((feature, i) => (
                     <motion.div
                         key={i}
@@ -610,36 +578,20 @@ export default function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.5 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900 transition-all duration-300"
+                        className="bg-slate-900 p-5 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-colors"
                     >
-                        <div className="w-11 h-11 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-4">
-                            {feature.icon}
-                        </div>
-                        <h3 className="text-lg font-bold mb-1.5">{feature.title}</h3>
-                        <p className="text-slate-400 leading-relaxed">{feature.desc}</p>
+                        {feature.icon}
+                        <h3 className="text-lg font-bold mb-1">{feature.title}</h3>
+                        <p className="text-slate-400">{feature.desc}</p>
                     </motion.div>
                 ))}
                 </div>
             </section>
 
-            {/* CTA banner */}
-            <section className="max-w-6xl mx-auto px-6 pb-20">
-                <div className="relative rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-600/20 via-slate-900 to-slate-900 p-10 md:p-14 text-center overflow-hidden">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight">Ready to take control of your finances?</h2>
-                    <p className="text-slate-400 mb-8 max-w-lg mx-auto">
-                        Join Financify today and start building better money habits in minutes.
-                    </p>
-                    <button
-                        onClick={openRegister}
-                        className="bg-indigo-600 hover:bg-indigo-500 px-8 py-3.5 rounded-xl text-white font-semibold transition-all hover:scale-[1.03] active:scale-[0.98] shadow-lg shadow-indigo-600/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-                    >
-                        Create Your Free Account
-                    </button>
-                </div>
-            </section>
+        
 
             {/* Footer */}
-            <footer className="border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+            <footer className="border-t border-slate-800 py-8 text-center text-slate-500">
                 © {new Date().getFullYear()} Financify. All rights reserved.
             </footer>
 

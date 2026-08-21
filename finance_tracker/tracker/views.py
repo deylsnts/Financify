@@ -149,7 +149,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
-import anthropic
+import openai
 
 # Security: Limit AI requests to 5 per minute per user to save costs
 class AIRateThrottle(UserRateThrottle):
@@ -161,38 +161,42 @@ class AIInsightsView(APIView):
 
     def post(self, request):
         try:
-            client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-
+            # Make sure to set OPENAI_API_KEY in your settings.py
+            openai.api_key = settings.OPENAI_API_KEY
+            
             data = request.data
-
+            
             # Security: Sanitize and truncate input to prevent large context attacks
             # Limit the size of transactions string to ~2000 chars
             raw_transactions = str(data.get('recent_transactions', ''))[:2000]
-
+            
+            # Basic sanitation (optional, as modern LLMs are fairly robust, but good practice)
+            # Remove potential prompt injection delimiters if necessary, though User role handles most.
+            
             # Construct a prompt using the data sent from the frontend
             prompt = f"""
             Analyze this financial data and give 1 short paragraph of personalized, actionable advice:
             - Total Income: {data.get('total_income')}
             - Total Expenses: {data.get('total_expense')}
             - Top Spending Category: {data.get('top_category')}
-
+            
             Recent Transactions:
             {raw_transactions}
-
+            
             Focus on specific ways to save money based on the top category. Keep it friendly.
             """
 
-            response = client.messages.create(
-                model="claude-opus-5",
-                max_tokens=300,
-                system="You are a helpful financial advisor.",
-                messages=[{"role": "user", "content": prompt}],
+            # Call OpenAI API (using GPT-3.5-turbo or GPT-4)
+            response = openai.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful financial advisor."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=150
             )
-
-            insight = next(
-                (block.text for block in response.content if block.type == "text"),
-                "",
-            )
+            
+            insight = response.choices[0].message.content
             return Response({"insight": insight})
 
         except Exception as e:
